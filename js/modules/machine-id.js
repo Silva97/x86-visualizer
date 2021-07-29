@@ -16,27 +16,47 @@ export class MachineId {
     };
 
     static operandSizes = [
-        4,
-        2,
+        2,   // 16-bit
+        4,   // 32-bit
     ];
+
+    static addressSizes = {
+        [ks.MODE_16]: 2,   // 16-bit
+        [ks.MODE_32]: 4,   // 32-bit
+        [ks.MODE_64]: 8,   // 64-bit
+    };
 
     static decodeMachineCode(byteList, operationMode) {
         let modRM = null;
         let sib = null;
         let displacement = null;
         let immediate = null;
-        let operandSizeIndex = +(operationMode == ks.MODE_16)
+        let displacementSize = 0;
+        let operandSizeIndex = +(operationMode != ks.MODE_16)
+        let addressSize = this.addressSizes[operationMode];
 
         byteList = Array.from(byteList);
 
         const prefixes = this.#getPrefixes(byteList);
         const opcode = this.#getOpcode(byteList);
-        if (operationMode == ks.MODE_64 && opcode.invalid64bit) {
+        if (
+            !opcode
+            || (operationMode == ks.MODE_64 && opcode.invalid64bit)
+            || (operationMode != ks.MODE_64 && opcode.only64bit)
+        ) {
             return null;
         }
 
         if (this.#hasPrefix(prefixes, 0x66)) {
             operandSizeIndex = +(!operandSizeIndex);
+        }
+
+        if (this.#hasPrefix(prefixes, 0x67)) {
+            addressSize = {
+                [ks.MODE_16]: this.addressSizes[ks.MODE_32],
+                [ks.MODE_32]: this.addressSizes[ks.MODE_16],
+                [ks.MODE_64]: this.addressSizes[ks.MODE_32],
+            }[operationMode];
         }
 
         if (opcode.hasModRM) {
@@ -45,7 +65,7 @@ export class MachineId {
                 sib = byteList.shift();
             }
 
-            const displacementSize = this.#getDisplacementSize(modRM, operationMode);
+            displacementSize = this.#getDisplacementSize(modRM, operationMode);
             if (displacementSize) {
                 displacement = this.#getLittleEndianValue(byteList, displacementSize);
                 byteList.splice(0, displacementSize);
@@ -68,6 +88,10 @@ export class MachineId {
             sib,
             displacement,
             immediate,
+            displacementSize,
+            addressSize,
+            operandSize: this.operandSizes[operandSizeIndex],
+            immSize: opcode.immSize,
         };
     }
 
@@ -100,7 +124,9 @@ export class MachineId {
         const firstByte = byteList.shift();
 
         if (typeof opcode.oneByteList[firstByte] == 'object') {
-            return opcode.oneByteList[firstByte];
+            const operation = opcode.oneByteList[firstByte];
+            operation.value = firstByte;
+            return operation;
         }
 
         return null;
@@ -160,6 +186,6 @@ export class MachineId {
     }
 
     static #hasPrefix(prefixes, prefix) {
-        return prefixes.indexOf(prefix) >= 0;
+        return prefixes.findIndex(({ prefix: currentPrefix }) => currentPrefix == prefix) >= 0;
     }
 }
