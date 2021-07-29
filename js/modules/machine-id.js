@@ -171,15 +171,13 @@ export class MachineId {
     }
 
     static #getLittleEndianValue(byteList, size) {
-        const dataView = new DataView(Uint32Array.from(byteList).buffer);
-
         switch (size) {
             case 1:
-                return dataView.getInt8(0);
+                return byteList[0];
             case 2:
-                return dataView.getInt16(0, true);
+                return (byteList[1] << 8) | byteList[0];
             case 4:
-                return dataView.getInt32(0, true);
+                return (byteList[3] << 24) | (byteList[2] << 16) | (byteList[1] << 8) | byteList[0];
             default:
                 throw new Error(`getLittleEndianValue(): The size ${size} is invalid.`);
         }
