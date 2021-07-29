@@ -24,14 +24,21 @@ $('.asm-input').addEventListener('change', function () {
         return;
     }
 
+    const operandSize = (decodedMachineCode.opFixedSize)
+        ? decodedMachineCode.opFixedSize
+        : decodedMachineCode.operandSize;
+
+    $('#address-size').innerText = `${decodedMachineCode.addressSize * 8}-bit`;
+    $('#operand-size').innerText = `${operandSize * 8}-bit`;
+
     for (let i = 0; i < NUMBER_OF_PREFIX; i++) {
         writeValue(`#prefix${i}`, decodedMachineCode.prefixes[i]?.prefix);
         $(`#prefix${i}-name`).innerText = decodedMachineCode.prefixes[i]?.name ?? '';
     }
 
     const immediateSize = (decodedMachineCode.immediate)
-        ? (decodedMachineCode.immSize)
-            ? decodedMachineCode.immSize
+        ? (decodedMachineCode.opFixedSize)
+            ? decodedMachineCode.opFixedSize
             : decodedMachineCode.operandSize
         : 0;
 
@@ -50,7 +57,6 @@ $('.asm-input').addEventListener('change', function () {
     const machineCodeHexaBytes = Array.from(machineCode).map((byte) => byte.toString(16).toUpperCase().padStart(2, '0'));
 
     $('.machine-bytes').innerText = machineCodeHexaBytes.join(' ');
-    console.log(machineCodeHexaBytes, decodedMachineCode);
 });
 
 

@@ -14,6 +14,15 @@
             <input type="text" class="asm-input" />
         </div>
         <div class="machine-bytes"></div>
+        <div class="attributes-container">
+            <div class="attribute">
+                <span>Address-size: <span id='address-size'></span></span>
+                |
+                <span>Operand-size: <span id='operand-size'></span></span>
+                |
+                <span>Segment: <span id='segment'></span></span>
+            </div>
+        </div>
         <div class="machine-container">
             <div class="machine-box">
                 <div class="machine mc1" id="prefix0"></div>
@@ -42,16 +51,16 @@
             <div class="machine-box">
                 <div class="machine mc1" id="modrm"></div>
                 <span class="mc-name">ModR/M</span>
-                <span>MOD = <span id="modrm-mod"></span></span>
-                <span>REG = <span id="modrm-reg"></span></span>
-                <span>R/M = <span id="modrm-rm"></span></span>
+                <span>MOD: <span id="modrm-mod"></span></span>
+                <span>REG: <span id="modrm-reg"></span></span>
+                <span>R/M: <span id="modrm-rm"></span></span>
             </div>
             <div class="machine-box">
                 <div class="machine mc1" id="sib"></div>
                 <span class="mc-name">SIB</span>
-                <span>Scale = <span id="sib-scale"></span></span>
-                <span>Index = <span id="sib-index"></span></span>
-                <span>Base = <span id="sib-base"></span></span>
+                <span>Scale: <span id="sib-scale"></span></span>
+                <span>Index: <span id="sib-index"></span></span>
+                <span>Base: <span id="sib-base"></span></span>
             </div>
             <div class="machine-box">
                 <div class="machine mc4" id="displacement"></div>
