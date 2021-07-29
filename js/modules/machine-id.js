@@ -73,8 +73,8 @@ export class MachineId {
         }
 
         if (opcode.hasImm) {
-            const immSize = (opcode.immSize)
-                ? opcode.immSize
+            const immSize = (opcode.opSize)
+                ? opcode.opSize
                 : this.operandSizes[operandSizeIndex];
 
             immediate = this.#getLittleEndianValue(byteList, immSize);
@@ -91,7 +91,7 @@ export class MachineId {
             displacementSize,
             addressSize,
             operandSize: this.operandSizes[operandSizeIndex],
-            immSize: opcode.immSize,
+            opFixedSize: opcode.opSize,
         };
     }
 
