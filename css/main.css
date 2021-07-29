@@ -1,0 +1,74 @@
+:root {
+    --bg-color: #FFFFFF;
+    --mc-bg-color: #D0D0D0;
+    --mc-text-color: #000000;
+    --mc-border: 1px solid gray;
+    --mc-size: 32px;
+}
+
+.visualizer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.asm-input {
+    border: 1px solid darkgreen;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 18px;
+    width: 450px;
+}
+
+.machine-bytes {
+    border: 1px solid black;
+    border-left: none;
+    border-right: none;
+    margin: 25px;
+    font-size: 48px;
+    font-family: monospace;
+    color: #8b8b8b;
+}
+
+.machine-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.machine-box {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    background-color: #ede6e6;
+    padding: 5px;
+    align-items: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+.machine {
+    background-color: var(--mc-bg-color);
+    color: var(--mc-text-color);
+    border: var(--mc-border);
+    height: var(--mc-size);
+    text-align: center;
+    font-size: 22px;
+}
+
+.mc-name {
+    font-size: 16px;
+}
+
+.mc1 {
+    width: var(--mc-size);
+}
+
+.mc2 {
+    width: calc(var(--mc-size) * 2);
+}
+
+.mc4 {
+    width: calc(var(--mc-size) * 4);
+}

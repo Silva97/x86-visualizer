@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>x86 Visualizer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body>
+    <div class="visualizer">
+        <div class="input-container">
+            <input type="text" class="asm-input" />
+        </div>
+        <div class="machine-bytes"></div>
+        <div class="machine-container">
+            <div class="machine-box">
+                <div class="machine mc1" id="prefix0"></div>
+                <span class="mc-name">Prefix</span>
+                <span id="prefix0-name"></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc1" id="prefix1"></div>
+                <span class="mc-name">Prefix</span>
+                <span id="prefix1-name"></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc1" id="prefix2"></div>
+                <span class="mc-name">Prefix</span>
+                <span id="prefix2-name"></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc1" id="prefix3"></div>
+                <span class="mc-name">Prefix</span>
+                <span id="prefix3-name"></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc2" id="opcode"></div>
+                <span class="mc-name">Opcode</span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc1" id="modrm"></div>
+                <span class="mc-name">ModR/M</span>
+                <span>MOD = <span id="modrm-mod"></span></span>
+                <span>REG = <span id="modrm-reg"></span></span>
+                <span>R/M = <span id="modrm-rm"></span></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc1" id="sib"></div>
+                <span class="mc-name">SIB</span>
+                <span>Scale = <span id="sib-scale"></span></span>
+                <span>Index = <span id="sib-index"></span></span>
+                <span>Base = <span id="sib-base"></span></span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc4" id="displacement"></div>
+                <span class="mc-name">Displacement <span id="displacement-size">0</span>-bit</span>
+                <span id="displacement-decimal">()</span>
+            </div>
+            <div class="machine-box">
+                <div class="machine mc4" id="immediate"></div>
+                <span class="mc-name">Immediate <span id="immediate-size">0</span>-bit</span>
+                <span id="immediate-decimal">()</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/keystone-x86.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
