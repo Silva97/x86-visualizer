@@ -92,6 +92,7 @@ export class MachineId {
             addressSize,
             operandSize: this.operandSizes[operandSizeIndex],
             opFixedSize: opcode.opSize,
+            segment: this.#getSegmentAttribute(prefixes, modRM, sib, operationMode),
         };
     }
 
@@ -185,5 +186,98 @@ export class MachineId {
 
     static #hasPrefix(prefixes, prefix) {
         return prefixes.findIndex(({ prefix: currentPrefix }) => currentPrefix == prefix) >= 0;
+    }
+
+    static #getSegmentAttribute(prefixes, modRM, sib, operationMode) {
+        const segmentOverridePrefixes = {
+            0x2E: 'CS',
+            0x36: 'SS',
+            0x3E: 'DS',
+            0x26: 'ES',
+            0x64: 'FS',
+            0x65: 'GS',
+        };
+
+        for (let prefix in segmentOverridePrefixes) {
+            if (prefixes.includes(segmentOverridePrefixes[prefix])) {
+                return segmentOverridePrefixes[prefix];
+            }
+        }
+
+        const mod = (modRM & 0b11000000) >> 6;
+        const reg = (modRM & 0b00111000) >> 3;
+        const rm = modRM & 0b00000111;
+        const scale = (sib & 0b11000000) >> 6;
+        const index = (sib & 0b00111000) >> 3;
+        const base = sib & 0b00000111;
+
+        const getSegment = {
+            [ks.MODE_16]: this.#modRMDefaultSegment16,
+            [ks.MODE_32]: this.#modRMDefaultSegment32,
+            [ks.MODE_64]: this.#modRMDefaultSegment64,
+        }[operationMode];
+
+        return getSegment(mod, reg, rm, scale, index, base);
+    }
+
+    static #modRMDefaultSegment64(mod, reg, rm, scale, index, base) {
+        if (mod == 0b11) {
+            return 'DS';
+        }
+
+        if (mod == 0b00 && rm == 0b101) {
+            return 'CS';
+        }
+
+        if ((mod == 0b01 || mod == 0b10) && rm == 0b101) {
+            return 'SS';
+        }
+
+        if (rm != 0b100) {
+            return 'DS';
+        }
+
+        if (base == 0b100) {
+            return 'SS';
+        }
+
+        // @todo: Check if REX.B=0. Otherwise R13/R13D is the base
+        if (mod != 0b00 && base == 0b101) {
+            return 'SS';
+        }
+
+        return 'DS';
+    }
+
+    static #modRMDefaultSegment32(mod, reg, rm, scale, index, base) {
+        if (mod == 0b11) {
+            return 'DS';
+        }
+
+        if ((mod == 0b01 || mod == 0b10) && rm == 0b101) {
+            return 'SS';
+        }
+
+        if ((mod != 0b00 && base == 0b101) || base == 0b100) {
+            return 'SS';
+        }
+
+        return 'DS';
+    }
+
+    static #modRMDefaultSegment16(mod, reg, rm) {
+        if (mod == 0b11) {
+            return 'DS';
+        }
+
+        if (rm == 0b010 || rm == 0b011) {
+            return 'SS';
+        }
+
+        if (mod != 0b00 && rm == 0b110) {
+            return 'SS';
+        }
+
+        return 'DS';
     }
 }

@@ -31,6 +31,7 @@ $('.asm-input').addEventListener('change', function () {
 
     $('#address-size').innerText = `${decodedMachineCode.addressSize * 8}-bit`;
     $('#operand-size').innerText = `${operandSize * 8}-bit`;
+    $('#segment').innerText = decodedMachineCode.segment;
 
     for (let i = 0; i < NUMBER_OF_PREFIX; i++) {
         writeValue(`#prefix${i}`, decodedMachineCode.prefixes[i]?.prefix);
