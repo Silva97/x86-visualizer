@@ -13,6 +13,22 @@ export class MachineId {
         0x65: 'GS',
         0x66: 'Operand-size override',
         0x67: 'Address-size override',
+        0x40: 'REX',
+        0x41: 'REX.B',
+        0x42: 'REX.X',
+        0x43: 'REX.XB',
+        0x44: 'REX.R',
+        0x45: 'REX.RB',
+        0x46: 'REX.RX',
+        0x47: 'REX.RXB',
+        0x48: 'REX.W',
+        0x49: 'REX.WB',
+        0x4A: 'REX.WX',
+        0x4B: 'REX.WXB',
+        0x4C: 'REX.WR',
+        0x4D: 'REX.WRB',
+        0x4E: 'REX.WRX',
+        0x4F: 'REX.WRXB',
     };
 
     static operandSizes = [
@@ -37,7 +53,7 @@ export class MachineId {
 
         byteList = Array.from(byteList);
 
-        const prefixes = this.#getPrefixes(byteList);
+        const prefixes = this.#getPrefixes(byteList, operationMode);
         const opcode = this.#getOpcode(byteList);
         if (
             !opcode
@@ -96,23 +112,33 @@ export class MachineId {
         };
     }
 
-    static #isPrefix(byte) {
+    static #isLegacyPrefix(byte) {
         return typeof this.prefixList[byte] == 'string';
     }
 
-    static #getPrefixes(byteList) {
+    static #getPrefixes(byteList, operationMode) {
         let prefixes = [];
         let currentByte;
 
         while (true) {
             currentByte = byteList[0];
-            if (!this.#isPrefix(currentByte)) {
+            if (!this.#isLegacyPrefix(currentByte)) {
                 break;
             }
 
             prefixes.push({
                 prefix: currentByte,
                 name: this.prefixList[currentByte],
+            });
+
+            byteList.shift();
+        }
+
+        const rex = byteList[0];
+        if (operationMode == ks.MODE_64 && rex >= 0x40 && rex <= 0x4F) {
+            prefixes.push({
+                prefix: rex,
+                name: this.prefixList[rex],
             });
 
             byteList.shift();
