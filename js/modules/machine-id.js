@@ -1,5 +1,7 @@
 import * as opcode from './opcode-list.js';
 
+const REX_W = 0b1000;
+
 export class MachineId {
     static prefixList = {
         0xF0: 'LOCK',
@@ -34,6 +36,7 @@ export class MachineId {
     static operandSizes = [
         2,   // 16-bit
         4,   // 32-bit
+        8,   // 64-bit
     ];
 
     static addressSizes = {
@@ -63,7 +66,10 @@ export class MachineId {
             return null;
         }
 
-        if (this.#hasPrefix(prefixes, 0x66)) {
+        const rex = prefixes[prefixes.length - 1]?.prefix;
+        if (operationMode == ks.MODE_64 && rex >= 0x40 && rex <= 0x4F && rex & REX_W) {
+            operandSizeIndex = 2;
+        } else if (this.#hasPrefix(prefixes, 0x66)) {
             operandSizeIndex = +(!operandSizeIndex);
         }
 
@@ -89,9 +95,13 @@ export class MachineId {
         }
 
         if (opcode.hasImm) {
-            const immSize = (opcode.opSize)
+            let immSize = (opcode.opSize)
                 ? opcode.opSize
                 : this.operandSizes[operandSizeIndex];
+
+            if (immSize > 4) {
+                immSize = 4;
+            }
 
             immediate = this.#getLittleEndianValue(byteList, immSize);
             byteList.splice(0, immSize);

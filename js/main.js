@@ -38,11 +38,15 @@ $('.asm-input').addEventListener('change', function () {
         $(`#prefix${i}-name`).innerText = decodedMachineCode.prefixes[i]?.name ?? '';
     }
 
-    const immediateSize = (decodedMachineCode.immediate)
+    let immediateSize = (decodedMachineCode.immediate)
         ? (decodedMachineCode.opFixedSize)
             ? decodedMachineCode.opFixedSize
             : decodedMachineCode.operandSize
         : 0;
+
+    if (immediateSize > 4) {
+        immediateSize = 4;
+    }
 
     writeValue('#opcode', decodedMachineCode.opcode.value, 2);
     writeValue('#modrm', decodedMachineCode.modRM);
