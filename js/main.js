@@ -2,12 +2,29 @@ import { MachineId } from './modules/machine-id.js';
 import { $ } from './modules/query.js';
 import { NumberHelper } from './modules/utils/number-helper.js';
 
-const ASM_MODE = ks.MODE_64;
 const NUMBER_OF_PREFIX = 4;
 
-const assembler = new ks.Keystone(ks.ARCH_X86, ASM_MODE);
-assembler.option(ks.OPT_SYNTAX, ks.OPT_SYNTAX_INTEL);
+let operationMode = 8;
+let syntax = 1;
+let assembler = new ks.Keystone(ks.ARCH_X86, operationMode);
+assembler.option(ks.OPT_SYNTAX, syntax);
 
+$('#operation-mode').addEventListener('change', function () {
+    assembler.close();
+    operationMode = Number(this.value);
+
+    assembler = new ks.Keystone(ks.ARCH_X86, operationMode);
+    assembler.option(ks.OPT_SYNTAX, syntax);
+
+    $('.asm-input').dispatchEvent(new Event('change'));
+});
+
+$('#syntax').addEventListener('change', function () {
+    syntax = Number(this.value);
+    assembler.option(ks.OPT_SYNTAX, syntax);
+
+    $('.asm-input').dispatchEvent(new Event('change'));
+});
 
 $('.asm-input').addEventListener('change', function () {
     let machineCode;
@@ -16,11 +33,11 @@ $('.asm-input').addEventListener('change', function () {
     try {
         machineCode = assembler.asm(firstInstruction);
     } catch (e) {
-        writeError(`The instruction is wrong or is invalid in ${ASM_MODE * 8}-bit mode.`);
+        writeError(`The instruction is wrong or is invalid in ${operationMode * 8}-bit mode.`);
         return;
     }
 
-    const decodedMachineCode = MachineId.decodeMachineCode(machineCode, ASM_MODE);
+    const decodedMachineCode = MachineId.decodeMachineCode(machineCode, operationMode);
     if (!decodedMachineCode) {
         writeError('The given instruction is not yet supported. Sorry for that!');
         return;

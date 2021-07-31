@@ -11,6 +11,19 @@
 <body>
     <div class="visualizer">
         <div class="input-container">
+            <div>
+                <label for="operation-mode">Mode: </label>
+                <select name="operation-mode" id="operation-mode">
+                    <option value="2">16-bit</option>
+                    <option value="4">32-bit</option>
+                    <option value="8" selected>64-bit</option>
+                </select>
+                <label for="syntax">Syntax: </label>
+                <select name="syntax" id="syntax">
+                    <option value="1" selected>Intel</option>
+                    <option value="2">AT&T</option>
+                </select>
+            </div>
             <input type="text" class="asm-input" placeholder="mov esi, [write_here]" />
             <div class="input-error" hidden></div>
         </div>
