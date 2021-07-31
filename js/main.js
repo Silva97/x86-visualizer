@@ -16,12 +16,13 @@ $('.asm-input').addEventListener('change', function () {
     try {
         machineCode = assembler.asm(firstInstruction);
     } catch (e) {
+        writeError(`The instruction is wrong or is invalid in ${ASM_MODE * 8}-bit mode.`);
         return;
     }
 
     const decodedMachineCode = MachineId.decodeMachineCode(machineCode, ASM_MODE);
     if (!decodedMachineCode) {
-        // Unsupported instruction
+        writeError('The given instruction is not yet supported. Sorry for that!');
         return;
     }
 
@@ -71,6 +72,7 @@ $('.asm-input').addEventListener('change', function () {
     const machineCodeHexaBytes = Array.from(machineCode).map((byte) => byte.toString(16).toUpperCase().padStart(2, '0'));
 
     $('.machine-bytes').innerText = machineCodeHexaBytes.join(' ');
+    hideError();
 });
 
 
@@ -89,4 +91,14 @@ function writeValue(field, value, paddingSize = 2, base = 16) {
     $(field).innerText = NumberHelper.intToBase(paddingSize * 4, base, value)
         .toUpperCase()
         .padStart(paddingSize, '0');
+}
+
+function writeError(message) {
+    const errorBox = $('.input-error');
+    errorBox.innerText = message;
+    errorBox.hidden = false;
+}
+
+function hideError() {
+    $('.input-error').hidden = true;
 }

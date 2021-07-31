@@ -22,6 +22,13 @@
     width: 450px;
 }
 
+.input-error {
+    background-color: #fa9e1d;
+    color: #f3f3f3;
+    font-size: 18px;
+    padding: 5px;
+}
+
 .attributes-container {
     font-size: 18px;
 }
