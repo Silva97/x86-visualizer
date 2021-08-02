@@ -94,8 +94,11 @@ $('.asm-input').addEventListener('change', function () {
 
 
 function writeValue(field, value, paddingSize = 2, base = 16) {
+    const fieldElement = $(field);
+
     if (typeof value != 'number') {
-        $(field).innerText = '';
+        fieldElement.innerText = '';
+        fieldElement.parentElement.classList.add('machine-box-hidden');
         return;
     }
 
@@ -105,9 +108,11 @@ function writeValue(field, value, paddingSize = 2, base = 16) {
         8: NumberHelper.int32toBase,
     }[paddingSize];
 
-    $(field).innerText = NumberHelper.intToBase(paddingSize * 4, base, value)
+    fieldElement.innerText = NumberHelper.intToBase(paddingSize * 4, base, value)
         .toUpperCase()
         .padStart(paddingSize, '0');
+
+    fieldElement.parentElement.classList.remove('machine-box-hidden');
 }
 
 function writeError(message) {

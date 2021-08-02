@@ -79,6 +79,10 @@ select {
     font-size: 14px;
 }
 
+.machine-box-hidden {
+    display: none;
+}
+
 .machine {
     background-color: var(--mc-bg-color);
     color: var(--mc-text-color);
