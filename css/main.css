@@ -28,18 +28,33 @@ select {
 }
 
 .asm-input {
+    position: absolute;
     border: 1px solid darkgreen;
     border-radius: 5px;
-    padding: 10px;
+    padding: 10px!important;
     font-family: monospace;
     font-size: 18px;
     width: 450px;
+    color: transparent;
+    caret-color: white;
+    background-color: #535353;
+}
+
+.asm-input::placeholder {
+    color: rgb(207, 207, 207);
+}
+
+.asm-output {
+    pointer-events: none;
+    background: transparent!important;
+    z-index: 5;
 }
 
 .input-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 50px;
 }
 
 .input-error {

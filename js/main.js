@@ -26,6 +26,13 @@ $('#syntax').addEventListener('change', function () {
     $('.asm-input').dispatchEvent(new Event('change'));
 });
 
+$('.asm-input').addEventListener('input', function () {
+    const output = $('.asm-output');
+    output.innerHTML = this.value || '&nbsp;';
+
+    hljs.highlightElement(output);
+});
+
 $('.asm-input').addEventListener('change', function () {
     let machineCode;
     const firstInstruction = this.value.split(';')[0];
